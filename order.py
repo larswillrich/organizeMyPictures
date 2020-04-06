@@ -97,11 +97,13 @@ class Pictures:
             
 
 # this path is the path to your pictures, most likely you want to adapt this!
-path = '/Volumes/DATA/Lars_Data/media/Media/Handy/'
-#path = '/Volumes/DATA/Test'
+#path = '/Volumes/DATA/Lars_Data/media/Media/Handy/'
+path = './pictures'
 
 pictures = Pictures(path)
 pictures.collect()
 pictures.saveDF('files.csv')
 
+print('')
+print('duplicates:')
 pictures.printDublicates()
