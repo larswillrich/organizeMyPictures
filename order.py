@@ -8,6 +8,8 @@ class Pictures:
     from datetime import datetime
     import base64
     import pandas as pd
+    import csv
+    import codecs
 
     # this is the used key in EXIF dictinary for geo location data
     GEOKEY = 34853
@@ -75,8 +77,8 @@ class Pictures:
             
             file['location'] = location
             if geotags != None:
-                for i in geotags.keys():
-                    file[i] = geotags[i]
+                #for i in geotags.keys():
+                #    file[i] = geotags[i]
                     
                 if self.GEOKEY in exif:
                     file['geoTagBase64'] = self.base64.b64encode(str(exif[Pictures.GEOKEY]).encode('ascii')) 
@@ -85,25 +87,33 @@ class Pictures:
         picDF = self.pd.DataFrame(self.pictureDict)
         picDF.to_csv(csvPath, index=False, header=True)
 
+    def fromCSV(self, csvPath):
+        input_file = self.csv.DictReader(self.codecs.open(csvPath, 'rU', 'utf-8'))
+        self.pictureDict = []
+        for row in input_file:
+            self.pictureDict.append(row) 
+        
     def printDublicates(self):
-        duplicates = {}
+        countDuplicates = {}
         for picture in self.pictureDict:
-            if picture['hash'] in duplicates:
-                duplicates[picture['hash']] = duplicates[picture['hash']] + 1
+            if picture['hash'] in countDuplicates:
+                countDuplicates[picture['hash']] = countDuplicates[picture['hash']] + 1
             else:
-                duplicates[picture['hash']] = 0
+                countDuplicates[picture['hash']] = 0
 
-        self.prettyprint([{"{}".format(k): "{}".format(v)} for k, v in duplicates.items() if v > 0])
+        onlyDuplicates = [{"{}".format(k): "{}".format(v)} for k, v in countDuplicates.items() if v > 0]
+        self.prettyprint(onlyDuplicates)
+        print('in total {} duplicates'.format(len(onlyDuplicates)))
             
 
 # this path is the path to your pictures, most likely you want to adapt this!
-#path = '/Volumes/DATA/Lars_Data/media/Media/Handy/'
+#path = '/Volumes/DATA/Lars_Data/media/'
 path = './pictures'
 
 pictures = Pictures(path)
 pictures.collect()
 pictures.saveDF('files.csv')
 
+#pictures.fromCSV('files.csv')
 print('')
-print('duplicates:')
 pictures.printDublicates()
