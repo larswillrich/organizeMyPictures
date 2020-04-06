@@ -7,10 +7,10 @@
 # ==========================================
 # ==========================================
 
-
 import requests
 from PIL.ExifTags import GPSTAGS, TAGS
 from PIL import Image
+import os
 
 def get_exif(filename):
     image = Image.open(filename)
@@ -65,8 +65,8 @@ def get_location(geotags):
     uri = 'https://reverse.geocoder.api.here.com/6.2/reversegeocode.json'
     headers = {}
     params = {
-        'app_id': '',
-        'app_code': '',
+        'app_id': os.environ['HERE_APP_ID'],
+        'app_code': os.environ['HERE_APP_CODE'],
         'prox': "%s,%s" % coords,
         'gen': 9,
         'mode': 'retrieveAddresses',
