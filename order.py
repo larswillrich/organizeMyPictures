@@ -10,6 +10,7 @@ class Pictures:
     import pandas as pd
     import csv
     import codecs
+    import shutil
 
     # this is the used key in EXIF dictinary for geo location data
     GEOKEY = 34853
@@ -93,27 +94,59 @@ class Pictures:
         for row in input_file:
             self.pictureDict.append(row) 
         
-    def printDublicates(self):
+    def calculateDuplicatesAndSafe(self):
         countDuplicates = {}
         for picture in self.pictureDict:
             if picture['hash'] in countDuplicates:
-                countDuplicates[picture['hash']] = countDuplicates[picture['hash']] + 1
-            else:
-                countDuplicates[picture['hash']] = 0
+                countDuplicates[picture['hash']]['duplicates'] = countDuplicates[picture['hash']]['duplicates'] + 1
 
-        onlyDuplicates = [{"{}".format(k): "{}".format(v)} for k, v in countDuplicates.items() if v > 0]
-        self.prettyprint(onlyDuplicates)
-        print('in total {} duplicates'.format(len(onlyDuplicates)))
+                # add path of every duplicated photo. Remember, the first picture, when the number of duplicates is 0, don't add a path!
+                countDuplicates[picture['hash']]['pathes'].append(picture["path"])
+            else:
+                countDuplicates[picture['hash']] = {
+                    'duplicates': 0,
+                    'creationTime': picture["creationTime"],
+                    'pathes': []
+                }
+
+        self.onlyDuplicates = [{k: v} for k, v in countDuplicates.items() if v['duplicates'] > 0]
+        self.prettyprint(self.onlyDuplicates)
+        print('in total {} pictures have duplicates'.format(len(self.onlyDuplicates)))
+
+    def moveDuplicatePicturesTo(self, pathToStoreDuplicatePictures):
+        
+        # are there any pictures available? Maybe not calculated, so do it again
+        if not self.onlyDuplicates:
+            self.calculateDuplicatesAndSafe()
+
+        # if path where to store duplicates not exist, create one
+        if not self.os.path.exists(pathToStoreDuplicatePictures):
+            self.os.mkdir(pathToStoreDuplicatePictures)
+
+        # I don't want to have name conflicts, add a number!
+        counter = 0
+        for duplicatePicture in self.onlyDuplicates:
+            pictureObject = duplicatePicture[next(iter(duplicatePicture))]
+
+            for path in pictureObject['pathes']:
+                print('move')
+                print(path)
+
+                counter = counter + 1
+                noUsage, file_extension = self.os.path.splitext(path)
+                self.shutil.move(path, '{}_{}{}'.format(self.os.path.join(pathToStoreDuplicatePictures, pictureObject['creationTime']),counter, file_extension))
             
 
 # this path is the path to your pictures, most likely you want to adapt this!
 #path = '/Volumes/DATA/Lars_Data/media/'
 path = './pictures'
+pathToStoreDuplicatePictures = './duplicatePictures'
 
 pictures = Pictures(path)
 pictures.collect()
 pictures.saveDF('files.csv')
 
-#pictures.fromCSV('files.csv')
-print('')
-pictures.printDublicates()
+#pictures.fromCSV('./files.csv')
+pictures.calculateDuplicatesAndSafe()
+
+#pictures.moveDuplicatePicturesTo(pathToStoreDuplicatePictures)
