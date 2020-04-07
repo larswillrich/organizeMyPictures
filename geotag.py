@@ -11,6 +11,7 @@ import requests
 from PIL.ExifTags import GPSTAGS, TAGS
 from PIL import Image
 import os
+import pickledb
 
 def get_exif(filename):
     image = Image.open(filename)
@@ -74,6 +75,7 @@ def get_location(geotags):
     }
 
     response = requests.get(uri, headers=headers, params=params)
+
     try:
         response.raise_for_status()
         return response.json()
@@ -92,8 +94,20 @@ def getGeoData(file):
 
     if 'GPSLatitude' not in geotags: return None, geotags, exif
 
-#    uncommended, because I don't want to speak with the HERE API in testing due to ressource limits in free version
-#    include again!!
-#
-#    return get_location(geotags)['Response']['View'][0]['Result'][0]['Location']['Address']['Label'], geotags, exif
-    return 'GEO_LOCATION', geotags, exif
+    key = str(geotags)
+    geoLocation = db.get(key)
+    if not geoLocation:
+        print('doing API call')
+
+        # call api, because key is not yet present in db
+        geoLocation = get_location(geotags)
+        db.set(key, geoLocation)
+
+    if (len(geoLocation['Response']['View']) < 1): return None, geotags, exif
+
+    return geoLocation['Response']['View'][0]['Result'][0]['Location']['Address']['Label'], geotags, exif
+
+def storeDB():
+    db.dump()
+
+db = pickledb.load('geolocations.db', False)

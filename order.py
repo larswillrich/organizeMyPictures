@@ -83,6 +83,7 @@ class Pictures:
                     
                 if self.GEOKEY in exif:
                     file['geoTagBase64'] = self.base64.b64encode(str(exif[Pictures.GEOKEY]).encode('ascii')) 
+        self.geotag.storeDB()
 
     def saveDF(self, csvPath):
         picDF = self.pd.DataFrame(self.pictureDict)
