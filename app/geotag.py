@@ -110,4 +110,4 @@ def getGeoData(file):
 def storeDB():
     db.dump()
 
-db = pickledb.load('geolocations.db', False)
+db = pickledb.load('/app/geoCacheDb/geolocations.db', False)

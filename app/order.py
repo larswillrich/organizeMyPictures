@@ -140,8 +140,8 @@ class Pictures:
 
 # this path is the path to your pictures, most likely you want to adapt this!
 #path = '/Volumes/DATA/Lars_Data/media/'
-path = './pictures'
-pathToStoreDuplicatePictures = './duplicatePictures'
+path = '/app/testPictures'
+pathToStoreDuplicatePictures = '/app/duplicatePictures'
 
 pictures = Pictures(path)
 pictures.collect()
