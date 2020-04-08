@@ -8,4 +8,4 @@ RUN pip install Pillow
 RUN pip install pickledb
 RUN pip install pandas
 
-CMD python /app/order.py
+CMD python /app/main.py 1 2 3 4

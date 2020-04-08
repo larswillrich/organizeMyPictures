@@ -138,16 +138,3 @@ class Pictures:
                 self.shutil.move(path, '{}_{}{}'.format(self.os.path.join(pathToStoreDuplicatePictures, pictureObject['creationTime']),counter, file_extension))
             
 
-# this path is the path to your pictures, most likely you want to adapt this!
-#path = '/Volumes/DATA/Lars_Data/media/'
-path = '/app/testPictures'
-pathToStoreDuplicatePictures = '/app/duplicatePictures'
-
-pictures = Pictures(path)
-pictures.collect()
-pictures.saveDF('files.csv')
-
-#pictures.fromCSV('./files.csv')
-pictures.calculateDuplicatesAndSafe()
-
-#pictures.moveDuplicatePicturesTo(pathToStoreDuplicatePictures)
