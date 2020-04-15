@@ -95,7 +95,7 @@ class Pictures:
         for row in input_file:
             self.pictureDict.append(row) 
         
-    def calculateDuplicatesAndSafe(self):
+    def calculateAndPrintDuplicates(self):
         countDuplicates = {}
         for picture in self.pictureDict:
             if picture['hash'] in countDuplicates:
@@ -118,7 +118,7 @@ class Pictures:
         
         # are there any pictures available? Maybe not calculated, so do it again
         if not self.onlyDuplicates:
-            self.calculateDuplicatesAndSafe()
+            self.calculateAndPrintDuplicates()
 
         # if path where to store duplicates not exist, create one
         if not self.os.path.exists(pathToStoreDuplicatePictures):
