@@ -112,32 +112,73 @@ def storeDB():
 
 db = pickledb.load('/app/geoCacheDb/geolocations.db', False)
 
+import json
+prettyprint = lambda obj: print(json.dumps(obj, indent=4, ensure_ascii=False))
+
+from datetime import datetime
+convertToDate = lambda str: datetime.strptime(str, '%Y-%m-%d %H:%M:%S').date().strftime("%d.%m.%Y")
 
 # returns a map
 # key: time down to a day
 # value: a LIST of all photos within the same day
 def getTimeOrderedPhotos(photos):
-    return {
-        "day": ["picture1", "picture1"]
-    }
 
-def findOnePhotoWithGeoTag(orderedPhotos):
-    return 'Photo'
+    def byModificationTime(elem):
+        return elem['modificationTime']
 
-def getAllPhotosWithoutGeoTag(photos):
-    return ["picture1", "picture1"]
+    photos.sort(key=byModificationTime)
+
+    photoMap = {}
+    for photo in photos:
+        date = convertToDate(photo['modificationTime'])
+        if date not in photoMap:
+            photoMap[date] = [photo]
+        else:
+            photoMap[date].append(photo)
+    
+    #print('map of photos sorted')
+    #prettyprint(photoMap)
+    return photoMap
+
+def findOnePhotoWithGeoTag(photosByDay):
+    for photo in photosByDay:
+        if photo["location"] == 'GEO_LOCATION':
+            return photo['location']
+    return False
+
+def getAllPhotosWithoutGeoTag(photosByDay):
+    photosWithoutGeoLocation = []
+    for photo in photosByDay:
+        if photo["location"] != 'GEO_LOCATION':
+            photosWithoutGeoLocation.append(photo)
+    return photosWithoutGeoLocation
 
 def takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag):
+    geoTag = photoWithGeoTag['location']
     return False
+
 
 def addGeoTagToPhotos(photos):
     
+    noGeoTagsFountCounter = 0
     # in order to have the complexity low, we want to order the photos first by time
     orderedPhotos = getTimeOrderedPhotos(photos)
 
-    for photosInSameTime in orderedPhotos:
+
+    #prettyprint(orderedPhotos)
+    for _, photosInSameTime in orderedPhotos.items():
+
         photoWithGeoTag = findOnePhotoWithGeoTag(photosInSameTime)
+
+        if photoWithGeoTag is False:
+            noGeoTagsFountCounter += 1
+            print('no geotags for this day found')
+            continue
+
         photosWithoutGeoTag = getAllPhotosWithoutGeoTag(photosInSameTime)
         
         for photoWithoutGeoTag in photosWithoutGeoTag:
+            prettyprint(photoWithoutGeoTag)
             takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag)
+    
+    print('no geo tags found for {} days'.format(noGeoTagsFountCounter))

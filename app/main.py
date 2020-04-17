@@ -8,6 +8,11 @@ def isCSVFilePresent(path):
         return True
     return False
 
+if os.environ.get('addGeoTag') is not None:
+    addGeoTag = os.environ['addGeoTag']
+else:
+    addGeoTag = 'false'
+
 if os.environ.get('moveDuplicates') is not None:
     moveDuplicates = os.environ['moveDuplicates']
 else:
@@ -34,6 +39,10 @@ pictures.calculateAndPrintDuplicates()
 if moveDuplicates == 'true':
     print('you have chosen to move the duplicate pictures. They will be available in the folder \'dublicatesFromPyPictureProgram\'')
     pictures.moveDuplicatePicturesTo(os.path.join(path, 'dublicatesFromPyPictureProgram'))
+
+if addGeoTag == 'true':
+    print('add geo tag to pictures from within other pictures from the same day')
+    pictures.addGeoTagToPhotos()
 
 print('good bye')
 
