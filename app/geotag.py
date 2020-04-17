@@ -111,3 +111,33 @@ def storeDB():
     db.dump()
 
 db = pickledb.load('/app/geoCacheDb/geolocations.db', False)
+
+
+# returns a map
+# key: time down to a day
+# value: a LIST of all photos within the same day
+def getTimeOrderedPhotos(photos):
+    return {
+        "day": ["picture1", "picture1"]
+    }
+
+def findOnePhotoWithGeoTag(orderedPhotos):
+    return 'Photo'
+
+def getAllPhotosWithoutGeoTag(photos):
+    return ["picture1", "picture1"]
+
+def takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag):
+    return False
+
+def addGeoTagToPhotos(photos):
+    
+    # in order to have the complexity low, we want to order the photos first by time
+    orderedPhotos = getTimeOrderedPhotos(photos)
+
+    for photosInSameTime in orderedPhotos:
+        photoWithGeoTag = findOnePhotoWithGeoTag(photosInSameTime)
+        photosWithoutGeoTag = getAllPhotosWithoutGeoTag(photosInSameTime)
+        
+        for photoWithoutGeoTag in photosWithoutGeoTag:
+            takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag)
