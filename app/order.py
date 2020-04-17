@@ -76,13 +76,36 @@ class Pictures:
 
             location, geotags, exif = self.geotag.getGeoData(file['path'])
             
-            file['location'] = location
+            if location == None:
+                file['location'] = 'NO_GEO_LOCATION' 
+            else:
+                file['location'] = location
             if geotags != None:
                 #for i in geotags.keys():
                 #    file[i] = geotags[i]
                     
                 if self.GEOKEY in exif:
-                    file['geoTagBase64'] = self.base64.b64encode(str(exif[Pictures.GEOKEY]).encode('ascii')) 
+                    #print("===========================")
+                    #print(exif[Pictures.GEOKEY])
+                    encodedGEO = str(exif[Pictures.GEOKEY]).encode('utf-8')
+                    #print(encodedGEO)
+                    base64encodedGEO = self.base64.b64encode(encodedGEO)
+                    #print(base64encodedGEO)
+
+                    #print()
+                    #print('save to XML file')
+                    xmlfileformat = base64encodedGEO.decode('utf-8')
+                    #print(xmlfileformat)
+                    #print(xmlfileformat.encode('utf-8'))
+
+                    #print()
+                    #print('back to normal')
+                    #decodedGEO = self.base64.b64decode(xmlfileformat.encode('utf-8'))
+                    #print(decodedGEO)
+                    #print(decodedGEO.decode('utf-8'))
+
+                    file['geoTagBase64'] = xmlfileformat
+
         self.geotag.storeDB()
 
     def saveDF(self, csvPath):

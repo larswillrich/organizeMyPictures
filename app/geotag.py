@@ -12,6 +12,7 @@ from PIL.ExifTags import GPSTAGS, TAGS
 from PIL import Image
 import os
 import pickledb
+import piexif
 
 def get_exif(filename):
     image = Image.open(filename)
@@ -136,25 +137,36 @@ def getTimeOrderedPhotos(photos):
         else:
             photoMap[date].append(photo)
     
-    #print('map of photos sorted')
-    #prettyprint(photoMap)
     return photoMap
 
 def findOnePhotoWithGeoTag(photosByDay):
     for photo in photosByDay:
-        if photo["location"] == 'GEO_LOCATION':
-            return photo['location']
+        if photo["location"] != 'NO_GEO_LOCATION':
+            return photo
     return False
 
 def getAllPhotosWithoutGeoTag(photosByDay):
     photosWithoutGeoLocation = []
     for photo in photosByDay:
-        if photo["location"] != 'GEO_LOCATION':
+        if photo["location"] == 'NO_GEO_LOCATION':
             photosWithoutGeoLocation.append(photo)
     return photosWithoutGeoLocation
 
+import base64
+
 def takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag):
-    geoTag = photoWithGeoTag['location']
+
+    # get original exif data first!
+    exif_data = piexif.load(photoWithGeoTag['path'])
+    exif_dataToUpdate = piexif.load(photoWithoutGeoTag['path'])
+
+    newGPS = {"GPS": exif_data['GPS']}
+    
+    # update exif data to include GPS tag
+    exif_dataToUpdate.update(newGPS)
+    exif_bytes = piexif.dump(exif_dataToUpdate)
+    piexif.insert(exif_bytes, photoWithoutGeoTag['path'])
+    
     return False
 
 
@@ -164,8 +176,6 @@ def addGeoTagToPhotos(photos):
     # in order to have the complexity low, we want to order the photos first by time
     orderedPhotos = getTimeOrderedPhotos(photos)
 
-
-    #prettyprint(orderedPhotos)
     for _, photosInSameTime in orderedPhotos.items():
 
         photoWithGeoTag = findOnePhotoWithGeoTag(photosInSameTime)
@@ -178,7 +188,11 @@ def addGeoTagToPhotos(photos):
         photosWithoutGeoTag = getAllPhotosWithoutGeoTag(photosInSameTime)
         
         for photoWithoutGeoTag in photosWithoutGeoTag:
-            prettyprint(photoWithoutGeoTag)
             takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag)
     
     print('no geo tags found for {} days'.format(noGeoTagsFountCounter))
+
+
+
+
+
