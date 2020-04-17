@@ -140,10 +140,13 @@ def getTimeOrderedPhotos(photos):
     return photoMap
 
 def findOnePhotoWithGeoTag(photosByDay):
+    photosWithGeoTag = []
     for photo in photosByDay:
         if photo["location"] != 'NO_GEO_LOCATION':
-            return photo
-    return False
+            photosWithGeoTag.append(photo)
+    if (len(photosWithGeoTag) == 0):
+        return None
+    return photosWithGeoTag[int(len(photosWithGeoTag)/2)]
 
 def getAllPhotosWithoutGeoTag(photosByDay):
     photosWithoutGeoLocation = []
@@ -180,7 +183,7 @@ def addGeoTagToPhotos(photos):
 
         photoWithGeoTag = findOnePhotoWithGeoTag(photosInSameTime)
 
-        if photoWithGeoTag is False:
+        if photoWithGeoTag is None:
             noGeoTagsFountCounter += 1
             print('no geotags for this day found')
             continue
