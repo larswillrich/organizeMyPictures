@@ -1,7 +1,6 @@
 
-# add API credentials here
-export HERE_APP_ID=
-export HERE_APP_CODE=
+# add your API credentials in file ./hereApiCredentials.sh
+sh ./hereApiCredentials.sh
 
 docker build -t pictureprogram . && 
 docker run \
@@ -15,3 +14,4 @@ docker run \
 --env "moveDuplicates=false" \
 --env "addGeoTag=false" \
 -it pictureprogram
+cd ..
