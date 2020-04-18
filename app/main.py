@@ -19,6 +19,12 @@ else:
     printDuplicates = 'false'
 
 # addGeoTag ???
+if os.environ.get('addGeoInformationsToExistingCSVFile') is not None:
+    addGeoInformationsToExistingCSVFile = os.environ['addGeoInformationsToExistingCSVFile']
+else:
+    addGeoInformationsToExistingCSVFile = 'false'
+
+# addGeoTag ???
 if os.environ.get('addGeoTag') is not None:
     addGeoTag = os.environ['addGeoTag']
 else:
@@ -37,7 +43,7 @@ else:
     printGeoCodeStatistic = 'false'
 
 # path to pictures in docker container
-path = '/app/testPictures'
+path = '/app/picturesToProcess'
 
 # read from CSV File, if exists    
 readFromCSV = isCSVFilePresent(path)
@@ -50,10 +56,14 @@ pictures = Pictures(path)
 if readFromCSV:
     print('Found files.csv file, so do not create a new csv file but use the existing one.')
     pictures.fromCSV(os.path.join(path, 'files.csv'))
+    if addGeoInformationsToExistingCSVFile == 'true':
+        pictures.collectGeoInformation()
+        pictures.saveDF(os.path.join(path, 'files.csv'))
 else: 
     print('Did not find a files.csv, where may already some analysing data are already available. But seems not, so I will create one for you ...')
     pictures.collect()
-    pictures.collectGeoInformation()
+    if not printDuplicates:
+        pictures.collectGeoInformation()
     pictures.saveDF(os.path.join(path, 'files.csv'))
 
 if printDuplicates == 'true':

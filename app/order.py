@@ -69,6 +69,8 @@ class Pictures:
 
 
     def collectGeoInformation(self):
+        print()
+        print()
         print('Start collecting GEO Information')
         self.resetCounter()
 

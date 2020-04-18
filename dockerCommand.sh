@@ -10,13 +10,14 @@ HERE_APP_CODE=tbd
 
 docker build -t pictureprogram . && 
 docker run \
--v $(pwd)/../pictures:/app/testPictures \
+-v /Volumes/DATA/Lars_Data/media/Media/:/app/picturesToProcess \
 -v $(pwd)/geoCacheDb:/app/geoCacheDb \
 --env "HERE_APP_ID="$HERE_APP_ID \
 --env "HERE_APP_CODE="$HERE_APP_CODE \
 --env "path=./testPictures" \
 --env "printDuplicates=true" \
---env "printGeoCodeStatistic=true" \
+--env "addGeoInformationsToExistingCSVFile=false" \
+--env "printGeoCodeStatistic=false" \
 --env "moveDuplicates=false" \
 --env "addGeoTag=dry" \
 -it pictureprogram
