@@ -1,5 +1,9 @@
 
-# add your API credentials in file ./hereApiCredentials.sh
+# add your API credentials in file ./hereApiCredentials.sh with format
+#
+# export HERE_APP_ID=<insert your app id>
+# export HERE_APP_CODE=<insert your app code>
+#
 sh ./hereApiCredentials.sh
 
 docker build -t pictureprogram . && 
