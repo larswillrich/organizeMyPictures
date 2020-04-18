@@ -108,15 +108,15 @@ class Pictures:
 
         for file in self.pictureDict:
             if file['location'] != 'NO_GEO_LOCATION' :
-                noLocationAvailable += 1
+                locationAvailable += 1
 
                 location = file['location'].split(",")[len(file['location'].split(","))-1].strip()
                 if location not in locationStatistics:
-                    locationStatistics[location] = 0
+                    locationStatistics[location] = 1
                 else:
                     locationStatistics[location] = locationStatistics[location] + 1
             else:
-                locationAvailable += 1
+                noLocationAvailable += 1
             
         print('With Geo Informations: {}'.format(locationAvailable))
         print('WithOUT Geo Informations: {}'.format(noLocationAvailable))
