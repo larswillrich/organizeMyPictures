@@ -86,7 +86,11 @@ def get_location(geotags):
         return {}
 
 
+amoundOfNewGeoData = 0
+
 def getGeoData(file):
+
+    global amoundOfNewGeoData
     exif = get_exif(file)
 
     geotags = None if exif == None else get_geotagging(exif)
@@ -103,6 +107,11 @@ def getGeoData(file):
         # call api, because key is not yet present in db
         geoLocation = get_location(geotags)
         db.set(key, geoLocation)
+
+        amoundOfNewGeoData += 1
+        if amoundOfNewGeoData % 50 == 0:
+            print('backup geo data cache')
+            storeDB()
 
     if (len(geoLocation['Response']['View']) < 1): return None, geotags, exif
 
@@ -170,13 +179,14 @@ def takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag):
     exif_dataToUpdate = piexif.load(photoWithoutGeoTag['path'])
 
     newGPS = {"GPS": exif_data['GPS']}
-    
+
     # update exif data to include GPS tag
     exif_dataToUpdate.update(newGPS)
-    exif_bytes = piexif.dump(exif_dataToUpdate)
-    piexif.insert(exif_bytes, photoWithoutGeoTag['path'])
-    
-    return False
+    try:
+        exif_bytes = piexif.dump(exif_dataToUpdate)
+        piexif.insert(exif_bytes, photoWithoutGeoTag['path'])
+    except:
+        print("dump was not successfull")
 
 
 def addGeoTagToPhotos(photos, dry):

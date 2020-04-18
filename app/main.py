@@ -53,6 +53,7 @@ if readFromCSV:
 else: 
     print('Did not find a files.csv, where may already some analysing data are already available. But seems not, so I will create one for you ...')
     pictures.collect()
+    pictures.collectGeoInformation()
     pictures.saveDF(os.path.join(path, 'files.csv'))
 
 if printDuplicates == 'true':

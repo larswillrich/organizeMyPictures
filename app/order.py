@@ -67,9 +67,12 @@ class Pictures:
             } 
             for file in allFiles if self.fileCriteriaAreGiven(file)]
 
+
+    def collectGeoInformation(self):
         print('Start collecting GEO Information')
         self.resetCounter()
 
+        
         for file in self.pictureDict:
             if self.incrementCounter() % 100 == 0:
                 print('{} '.format(self.COUNTER), end='', flush=True)
@@ -81,7 +84,6 @@ class Pictures:
             else:
                 file['location'] = location
             if geotags != None:
-                    
                 if self.GEOKEY in exif:
                     encodedGEO = str(exif[Pictures.GEOKEY]).encode('utf-8')
                     base64encodedGEO = self.base64.b64encode(encodedGEO)
