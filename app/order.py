@@ -100,7 +100,30 @@ class Pictures:
         self.pictureDict = []
         for row in input_file:
             self.pictureDict.append(row) 
-        
+    
+    def printGeoCodeStatistic(self):
+        noLocationAvailable = 0
+        locationAvailable = 0
+        locationStatistics = {}
+
+        for file in self.pictureDict:
+            if file['location'] != 'NO_GEO_LOCATION' :
+                noLocationAvailable += 1
+
+                location = file['location'].split(",")[len(file['location'].split(","))-1].strip()
+                if location not in locationStatistics:
+                    locationStatistics[location] = 0
+                else:
+                    locationStatistics[location] = locationStatistics[location] + 1
+            else:
+                locationAvailable += 1
+            
+        print('With Geo Informations: {}'.format(locationAvailable))
+        print('WithOUT Geo Informations: {}'.format(noLocationAvailable))
+        print()
+        print('Here is an overview how many pictures have been taken somewhere:')
+        self.prettyprint(locationStatistics)
+
     def calculateAndPrintDuplicates(self):
         countDuplicates = {}
         for picture in self.pictureDict:

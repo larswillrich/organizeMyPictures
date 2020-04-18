@@ -2,25 +2,48 @@ from order import Pictures
 import os
 from pathlib import Path
 
+# functions
 def isCSVFilePresent(path):
     csvFile = Path(os.path.join(path, 'files.csv'))
     if csvFile.is_file():
         return True
     return False
 
+# check parameter
+# =====================================
+
+# printDuplicates ???
+if os.environ.get('printDuplicates') is not None:
+    printDuplicates = os.environ['printDuplicates']
+else:
+    printDuplicates = 'false'
+
+# addGeoTag ???
 if os.environ.get('addGeoTag') is not None:
     addGeoTag = os.environ['addGeoTag']
 else:
     addGeoTag = 'false'
 
+# moveDuplicates ???
 if os.environ.get('moveDuplicates') is not None:
     moveDuplicates = os.environ['moveDuplicates']
 else:
     moveDuplicates = 'false'
 
+# printGeoCodeStatistic ???
+if os.environ.get('printGeoCodeStatistic') is not None:
+    printGeoCodeStatistic = os.environ['printGeoCodeStatistic']
+else:
+    printGeoCodeStatistic = 'false'
+
+# path to pictures in docker container
 path = '/app/testPictures'
+
+# read from CSV File, if exists    
 readFromCSV = isCSVFilePresent(path)
 
+# start of picture program
+# =====================================
 print('Welcome to my picture Program. More then happy to have you here!')
 
 pictures = Pictures(path)
@@ -32,9 +55,15 @@ else:
     pictures.collect()
     pictures.saveDF(os.path.join(path, 'files.csv'))
 
-print('')
-print('I will show you all duplicates now:')
-pictures.calculateAndPrintDuplicates()
+if printDuplicates == 'true':
+    print('')
+    print('I will show you all duplicates now:')
+    pictures.calculateAndPrintDuplicates()
+    
+if printGeoCodeStatistic == 'true':
+    print('')
+    print('I will show you some geotag statistics:')
+    pictures.printGeoCodeStatistic()
 
 if moveDuplicates == 'true':
     print('you have chosen to move the duplicate pictures. They will be available in the folder \'dublicatesFromPyPictureProgram\'')
@@ -43,6 +72,8 @@ if moveDuplicates == 'true':
 if addGeoTag == 'true':
     print('add geo tag to pictures from within other pictures from the same day')
     pictures.addGeoTagToPhotos()
+    pictures.collect()
+    pictures.saveDF(os.path.join(path, 'files.csv'))
 
 print('good bye')
 
