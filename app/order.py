@@ -166,5 +166,5 @@ class Pictures:
                 noUsage, file_extension = self.os.path.splitext(path)
                 self.shutil.move(path, '{}_{}{}'.format(self.os.path.join(pathToStoreDuplicatePictures, pictureObject['creationTime']),counter, file_extension))
     
-    def addGeoTagToPhotos(self):
-        self.geotag.addGeoTagToPhotos(self.pictureDict)
+    def addGeoTagToPhotos(self, dry):
+        self.geotag.addGeoTagToPhotos(self.pictureDict, dry)

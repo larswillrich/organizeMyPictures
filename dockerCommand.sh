@@ -18,6 +18,6 @@ docker run \
 --env "printDuplicates=true" \
 --env "printGeoCodeStatistic=true" \
 --env "moveDuplicates=false" \
---env "addGeoTag=false" \
+--env "addGeoTag=dry" \
 -it pictureprogram
 cd ..

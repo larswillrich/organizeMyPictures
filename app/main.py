@@ -69,12 +69,19 @@ if moveDuplicates == 'true':
     print('you have chosen to move the duplicate pictures. They will be available in the folder \'dublicatesFromPyPictureProgram\'')
     pictures.moveDuplicatePicturesTo(os.path.join(path, 'dublicatesFromPyPictureProgram'))
 
-if addGeoTag == 'true':
+if addGeoTag != 'false':
     print('add geo tag to pictures from within other pictures from the same day')
-    pictures.addGeoTagToPhotos()
-    pictures.collect()
-    pictures.saveDF(os.path.join(path, 'files.csv'))
 
-print('good bye')
+    if addGeoTag == 'dry':
+        print('only run dry, so no actual changes!')
+        print('=====================================')
+        pictures.addGeoTagToPhotos(True)
+    else:
+        pictures.addGeoTagToPhotos(False)
+        pictures.collect()
+        pictures.saveDF(os.path.join(path, 'files.csv'))
+
+print()
+print('good bye ;)')
 
 

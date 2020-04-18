@@ -145,8 +145,8 @@ def findOnePhotoWithGeoTag(photosByDay):
         if photo["location"] != 'NO_GEO_LOCATION':
             photosWithGeoTag.append(photo)
     if (len(photosWithGeoTag) == 0):
-        return None
-    return photosWithGeoTag[int(len(photosWithGeoTag)/2)]
+        return None, 0
+    return photosWithGeoTag[int(len(photosWithGeoTag)/2)], len(photosWithGeoTag)
 
 def getAllPhotosWithoutGeoTag(photosByDay):
     photosWithoutGeoLocation = []
@@ -179,25 +179,30 @@ def takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag):
     return False
 
 
-def addGeoTagToPhotos(photos):
+def addGeoTagToPhotos(photos, dry):
     
     noGeoTagsFountCounter = 0
     # in order to have the complexity low, we want to order the photos first by time
     orderedPhotos = getTimeOrderedPhotos(photos)
 
+    for day, photosInSameTime in orderedPhotos.items():
+        _, amountWithGeoTag = findOnePhotoWithGeoTag(photosInSameTime)
+        print('{}: {} pictures and {} with GeoInformaton'.format(day, len(photosInSameTime), amountWithGeoTag))
+
+
     for _, photosInSameTime in orderedPhotos.items():
 
-        photoWithGeoTag = findOnePhotoWithGeoTag(photosInSameTime)
+        photoWithGeoTag, _ = findOnePhotoWithGeoTag(photosInSameTime)
 
         if photoWithGeoTag is None:
             noGeoTagsFountCounter += 1
-            print('no geotags for this day found')
             continue
 
         photosWithoutGeoTag = getAllPhotosWithoutGeoTag(photosInSameTime)
         
-        for photoWithoutGeoTag in photosWithoutGeoTag:
-            takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag)
+        if not dry:
+            for photoWithoutGeoTag in photosWithoutGeoTag:
+                takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag)
     
     print('no geo tags found for {} days'.format(noGeoTagsFountCounter))
 
