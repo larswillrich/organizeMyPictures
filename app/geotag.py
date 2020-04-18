@@ -160,6 +160,12 @@ import base64
 def takeOverGeoTag(photoWithoutGeoTag, photoWithGeoTag):
 
     # get original exif data first!
+    FILE_EXTENSIONS = ['.jpg', '.jpeg', 'tiff']
+    iteration = iter(i for i in FILE_EXTENSIONS if photoWithoutGeoTag['path'].lower().endswith(i))
+    if next(iteration, None) == None:
+        print(("skipping {}".format(photoWithoutGeoTag['path'])))
+        return
+
     exif_data = piexif.load(photoWithGeoTag['path'])
     exif_dataToUpdate = piexif.load(photoWithoutGeoTag['path'])
 

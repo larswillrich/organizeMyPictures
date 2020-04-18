@@ -16,7 +16,7 @@ class Pictures:
     GEOKEY = 34853
 
     # analised files, adapt or extend it
-    FILE_EXTENSIONS = ['.jpg', '.png']
+    FILE_EXTENSIONS = ['.jpg', '.jpeg', '.png', 'tiff']
 
     def __init__(self, path):
         self.path = path
