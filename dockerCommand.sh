@@ -8,15 +8,24 @@ HERE_APP_ID=tbd
 HERE_APP_CODE=tbd
 . ./hereApiCredentials.sh
 
+#
+# configuration here:
+printDuplicates=false
+moveDuplicates=false
+addGeoTag=false
+
+# your path to your pictures. This will be mounted into the docker runtime environment 
+path=<path/to/your/pictures/pictures>
+#
+
 docker build -t pictureprogram . && 
 docker run \
--v $(pwd)/../pictures/:/app/picturesToProcess \
+-v $path:/app/picturesToProcess \
 -v $(pwd)/geoCacheDb:/app/geoCacheDb \
 --env "HERE_APP_ID="$HERE_APP_ID \
 --env "HERE_APP_CODE="$HERE_APP_CODE \
 --env "path=./picturesToProcess" \
---env "printDuplicates=false" \
---env "moveDuplicates=false" \
---env "addGeoTag=false" \
+--env "printDuplicates="$printDuplicates \
+--env "moveDuplicates="$moveDuplicates \
+--env "addGeoTag="$addGeoTag \
 -it pictureprogram
-cd ..
