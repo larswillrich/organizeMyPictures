@@ -111,6 +111,9 @@ class Pictures:
         locationStatistics = {}
 
         for file in self.pictureDict:
+            if 'location' not in file:
+                print('no location data evailable. You should configure the program probably')
+                return
             if file['location'] != 'NO_GEO_LOCATION' :
                 locationAvailable += 1
 

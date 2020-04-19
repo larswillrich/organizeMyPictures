@@ -199,9 +199,16 @@ def addGeoTagToPhotos(photos, dry):
         _, amountWithGeoTag = findOnePhotoWithGeoTag(photosInSameTime)
         print('{}: {} pictures and {} with GeoInformaton'.format(day, len(photosInSameTime), amountWithGeoTag))
 
-
+    numberOfDays = len(orderedPhotos)
+    counter = 0
+    print('iterating over {} days now'.format(numberOfDays))
     for _, photosInSameTime in orderedPhotos.items():
 
+        counter += 1
+        if counter % 10 == 0:
+            print('{} / {}'.format(counter, numberOfDays))
+            
+        print('iterating over {} photos of this day'.format(len(photosInSameTime)))
         photoWithGeoTag, _ = findOnePhotoWithGeoTag(photosInSameTime)
 
         if photoWithGeoTag is None:
