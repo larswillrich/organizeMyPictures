@@ -10,7 +10,7 @@ After scanning all pictures in each of the steps, a files.csv file is created. I
 
 # Quickstart
 This program can run in a docker container. So you need to have a docker installed on your system!!  
-There is a script `dockerCommand.sh` and you should change it in order to parameterize the usage of the program. There are three parameter for now:  
+There is a script `dockerCommand.sh` and you should change it in order to parameterize the usage of the program. There are four parameter for now:  
 * PATH: your path to your pictures. Please enter a full path (not relative)
 * printDuplicates (true/false): Only shows duplicates, if true
 * moveDuplicates (true/false): If true, move out duplicates to the folder mentioned in your picture path. The folder will be named as `dublicatesFromPyPictureProgram` 
