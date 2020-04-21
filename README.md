@@ -14,9 +14,10 @@ There is a script `dockerCommand.sh` and you should change it in order to parame
 * PATH: your path to your pictures. Please enter a full path (not relative)
 * printDuplicates (true/false): Only shows duplicates, if true
 * moveDuplicates (true/false): If true, move out duplicates to the folder mentioned in your picture path. The folder will be named as `dublicatesFromPyPictureProgram` 
-* addGeoTag (true/false): if true, enrich pictures with a geo tag based on a geotag of other pictures at the same day
+* addGeoTag (true/false): if true, enrich pictures with a geo tag based on a geotag of other pictures at the same day. 
 
-* Technical informations
+
+# Technical informations
 The program is written in python and uses a bunch of 3th party libs. It's running inside a `python` docker container with `buster` as simple tag. For more information visit: https://hub.docker.com/_/python. At this timne it was python 3.8.2.
 
 
