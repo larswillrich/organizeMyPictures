@@ -10,12 +10,19 @@ After scanning all pictures in each of the steps, a files.csv file is created. I
 
 # Quickstart
 This program can run in a docker container. So you need to have a docker installed on your system!!  
-There is a script `dockerCommand.sh` and you should change it in order to parameterize the usage of the program. There are four parameter for now:  
-* PATH: your path to your pictures. Please enter a full path (not relative)
-* printDuplicates (true/false): Only shows duplicates, if true
-* moveDuplicates (true/false): If true, move out duplicates to the folder mentioned in your picture path. The folder will be named as `dublicatesFromPyPictureProgram` 
-* addGeoTag (true/false): if true, enrich pictures with a geo tag based on a geotag of other pictures at the same day. 
+There is a script `dockerCommand.sh` and you enter the path to your picture directory there. The section you need to change looks like:  
+```
+# your path to your pictures. This will be mounted into the docker runtime environment 
+path=/enter/your/path/to/your/pictures/here
+#
+```
 
+As soon you're starting the program by using the script `dockerCommand.sh` the container will be build and run. After successfully start it will ask you some questions you want to do. Following options are available:
+
+* Do you want to print all duplicates? [no]:
+* Do you want to move all duplicate pictures to another folder? [no]:
+* Do you want to display some geo statistics about your pictures? [yes]:
+* Do you want to add geo data to pictures? [no]
 
 # Technical informations
 The program is written in python and uses a bunch of 3th party libs. It's running inside a `python` docker container with `buster` as simple tag. For more information visit: https://hub.docker.com/_/python. At this timne it was python 3.8.2.
