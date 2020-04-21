@@ -175,3 +175,8 @@ class Pictures:
     
     def addGeoTagToPhotos(self, dry):
         self.geotag.addGeoTagToPhotos(self.pictureDict, dry)
+
+    def alreadyReadGeoTags(self):
+        if 'location' in self.pictureDict[0]:
+            return True
+        return False

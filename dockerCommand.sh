@@ -10,12 +10,12 @@ HERE_APP_CODE=tbd
 
 #
 # configuration here:
-printDuplicates=false
+printDuplicates=true
 moveDuplicates=false
 addGeoTag=false
 
 # your path to your pictures. This will be mounted into the docker runtime environment 
-path=<path/to/your/pictures/pictures>
+path=/enter/your/path/to/your/pictures/here
 #
 
 docker build -t pictureprogram . && 
@@ -24,7 +24,7 @@ docker run \
 -v $(pwd)/geoCacheDb:/app/geoCacheDb \
 --env "HERE_APP_ID="$HERE_APP_ID \
 --env "HERE_APP_CODE="$HERE_APP_CODE \
---env "path=./picturesToProcess" \
+--env "path="$path \
 --env "printDuplicates="$printDuplicates \
 --env "moveDuplicates="$moveDuplicates \
 --env "addGeoTag="$addGeoTag \

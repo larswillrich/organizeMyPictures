@@ -19,22 +19,47 @@ def end():
 # =====================================
 
 # printDuplicates ???
-if os.environ.get('printDuplicates') is not None:
-    printDuplicates = os.environ['printDuplicates']
-else:
-    printDuplicates = 'false'
 
-# addGeoTag ???
-if os.environ.get('addGeoTag') is not None:
-    addGeoTag = os.environ['addGeoTag']
-else:
-    addGeoTag = 'false'
+path = os.environ.get('path')
+correctPath = input('Is this path to your pictures correct: {} [yes]: '.format(path))
+if (correctPath == ''):
+    correctPath = 'yes'
+if (correctPath != 'no' and correctPath != '' and correctPath != 'yes'):
+    print('unsupported charakter, please retry')
+    end()
 
-# moveDuplicates ???
-if os.environ.get('moveDuplicates') is not None:
-    moveDuplicates = os.environ['moveDuplicates']
-else:
-    moveDuplicates = 'false'
+if (correctPath != 'yes'):
+    print('Please update the path in the file dockerCommand.sh and restart the program')
+    end()
+
+printDuplicates = input('Do you want to print all duplicates? [no]: ')
+if (printDuplicates == ''):
+    printDuplicates = 'no'
+if (printDuplicates != 'no' and printDuplicates != '' and printDuplicates != 'yes'):
+    print('unsupported charakter, please retry')
+    end()
+
+moveDuplicates = input('Do you want to move all duplicate pictures to another folder? [no]: ')
+if (moveDuplicates == ''):
+    moveDuplicates = 'no'
+if (moveDuplicates != 'no' and moveDuplicates != '' and moveDuplicates != 'yes'):
+    print('unsupported charakter, please retry')
+    end()
+
+if printDuplicates == 'no' and moveDuplicates == 'no':
+    showGeoStatistics = input('Do you want to display some geo statistics about your pictures? [yes]: ')
+    if (showGeoStatistics == ''):
+        showGeoStatistics = 'yes'
+    if (showGeoStatistics != 'no' and showGeoStatistics != '' and showGeoStatistics != 'yes'):
+        print('unsupported charakter, please retry')
+        end()
+
+    addGeoTag = input('Do you want to add geo data to pictures? [no]: ')
+    if (addGeoTag == ''):
+        addGeoTag = 'no'
+    if (addGeoTag != 'no' and addGeoTag != '' and addGeoTag != 'yes'):
+        print('unsupported charakter, please retry')
+        end()
 
 # path to pictures in docker container
 path = '/app/picturesToProcess'
@@ -55,20 +80,21 @@ else:
     pictures.collect()
     pictures.saveDF(os.path.join(path, 'files.csv'))
 
-if printDuplicates == 'true' or moveDuplicates == 'true':
+if printDuplicates == 'yes' or moveDuplicates == 'yes':
     print('')
     print('I will show you all duplicates now:')
     pictures.calculateAndPrintDuplicates()
-    if moveDuplicates == 'true':
+    if moveDuplicates == 'yes':
         print('you have chosen to move the duplicate pictures. They will be available in the folder \'dublicatesFromPyPictureProgram\'')
         pictures.moveDuplicatePicturesTo(os.path.join(path, 'dublicatesFromPyPictureProgram'))
-    
     end()
 
-pictures.collectGeoInformation()
-pictures.saveDF(os.path.join(path, 'files.csv'))
+if showGeoStatistics == 'yes' or addGeoTag == 'yes':
+    if not pictures.alreadyReadGeoTags():
+        pictures.collectGeoInformation()
+        pictures.saveDF(os.path.join(path, 'files.csv'))
 
-if addGeoTag != 'false':
+if addGeoTag == 'yes':
     print('add geo tag to pictures from within other pictures from the same day')
 
     if addGeoTag == 'dry':
@@ -83,7 +109,9 @@ if addGeoTag != 'false':
 
 print('')
 print('I will show you some geotag statistics:')
-pictures.printGeoCodeStatistic()
+if showGeoStatistics == 'yes':
+    pictures.printGeoCodeStatistic()
+
 end()
 
 
